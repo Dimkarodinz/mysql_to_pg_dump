@@ -11,15 +11,16 @@ namespace :db do
     if server_addr.include?("@")
       bar = RakeProgressbar.new(db_tables.size)
 
-      system mk_server_tmp_storage_dir(server_addr)
+      system "ssh #{server_addr} 'mkdir -p #{tmp_location}'"
       db_tables.each do |table|
-        system %{ssh #{server_addr} "echo '#{sql_select(table)}' | #{mysql_login} > #{file_to_save(table)}"}
+        system %{ssh #{server_addr} "echo '#{sql_select(table)}' | #{login_to_mysql} > #{file_to_save(table)}"}
         bar.inc
       end
       bar.finished
 
-      system copy_db_data_to_local(server_addr)
-      system del_server_tmp_storage_dir(server_addr)
+      system "scp -r #{server_addr}:#{tmp_location} tmp"
+      system "ssh #{server_addr} 'rm -rf #{tmp_location}'"
+
       printf "Db data from production server " \
              "has been pulled successfully\n".green
     else
@@ -36,9 +37,9 @@ namespace :db do
       input = STDIN.gets.strip
 
       if input == 'y'
-        if data_pulled?
-          clear_db
-          db_tables.each { |t| system %(psql -d #{dev['database']} -c "#{psql_query(t)}") }
+        if data_already_pulled?
+          clean_database
+          db_tables.each { |t| system %(psql -d #{dev['database']} -c "#{psql_import_query(t)}") }
           printf "Your db data now is equal to production\n".green
         else
           printf "No pulled data. Run 'rake db:pull' first\n".yellow
@@ -67,42 +68,26 @@ namespace :db do
     STDIN.gets.strip
   end
 
-  def data_pulled?
-    if %x(ls tmp).split("\n").include? 'db_server_data'
+  def data_already_pulled?
+    if %x{ls tmp}.split("\n").include? 'db_server_data'
       %x(ls tmp/db_server_data).split("\n").size == db_tables.size
     else
       false
     end
   end
 
-  def psql_query table_name
+  def psql_import_query table_name
     "\\copy #{table_name} from " \
     "'tmp/db_server_data/#{production['database']}_#{table_name}.txt' " \
     "delimiter E'\\t' null as 'NULL' csv header"
   end
 
-  def clear_db
+  def clean_database
     task_names = %w(db:drop db:create db:migrate)
     task_names.each { |t| Rake::Task[t].invoke }
   end
 
-  def dev
-    show_db_info 'development'
-  end
-
-  def production
-    show_db_info 'production'
-  end
-
-  def show_db_info env
-    Rails.application.config.database_configuration[env]
-  end
-
-  def copy_db_data_to_local server_address
-    "scp -r #{server_address}:#{tmp_location} tmp"
-  end
-
-  def mysql_login
+  def login_to_mysql
     "mysql " \
     "--user=#{production['username']} " \
     "--password=#{production['password']} " \
@@ -121,15 +106,19 @@ namespace :db do
     ActiveRecord::Base.connection.tables - ['schema_migrations']
   end
 
-  def mk_server_tmp_storage_dir server_address
-    "ssh #{server_address} mkdir -p #{tmp_location}"
-  end
-
-  def del_server_tmp_storage_dir server_address
-    "ssh #{server_address} 'rm -rf #{tmp_location}'"
-  end
-
   def tmp_location
     'app/current/tmp/db_server_data'
+  end
+
+  def show_db_info env
+    Rails.application.config.database_configuration[env]
+  end
+
+  def dev
+    show_db_info 'development'
+  end
+
+  def production
+    show_db_info 'production'
   end
 end
