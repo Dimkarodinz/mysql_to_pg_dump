@@ -39,6 +39,9 @@ Or install it yourself as:
 ```bash
 $ gem install mysql_to_pg_dump
 ```
+## TODO
+ - add something for multi-user usage
+ - ssh -i key.pem username@server supporting
 
 ## License
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).

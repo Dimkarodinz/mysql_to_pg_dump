@@ -1,6 +1,3 @@
-# require 'rake/rdoctask'
-# require 'rake/testtask'
-# require 'tasks/rails'
 require 'rake'
 require 'colorize'
 require 'rake-progressbar'
