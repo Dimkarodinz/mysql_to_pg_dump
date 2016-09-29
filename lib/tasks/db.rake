@@ -1,4 +1,5 @@
 require 'colorize'
+require 'rake-progressbar'
 
 namespace :db do
   desc "Copies db content from production " \
