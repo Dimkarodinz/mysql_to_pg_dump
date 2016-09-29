@@ -4,7 +4,7 @@ require 'rails'
 module MysqlToPgDump
   class Railtie < Rails::Railtie
     rake_tasks do
-      require './tasks/db.rake'
+      require 'lib/tasks/db.rake'
     end
   end
 end
