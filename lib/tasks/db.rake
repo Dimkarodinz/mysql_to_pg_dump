@@ -1,7 +1,7 @@
 require 'rake'
 require 'colorize'
 require 'rake-progressbar'
-require 'mysql_to_pg_dump'
+require 'mysql_to_pg_dump/tasks_helper'
 
 namespace :db do
   desc "Copies db content from production " \
