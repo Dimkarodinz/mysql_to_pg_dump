@@ -4,6 +4,8 @@ require 'rake-progressbar'
 require 'mysql_to_pg_dump/tasks_helper'
 
 namespace :db do
+  include MysqlToPgDump::TasksHelper
+
   desc "Copies db content from production " \
        "server into tmp/db_server_data"
   task pull: :environment do
