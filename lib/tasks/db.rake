@@ -1,6 +1,7 @@
 require 'rake'
 require 'colorize'
 require 'rake-progressbar'
+require './mysql_to_pg_dump/tasks_helper'
 
 namespace :db do
   desc "Copies db content from production " \
@@ -61,66 +62,5 @@ namespace :db do
     desc "Pulls remote mysql db data, then loads it to " \
          "local postgres and cleans junk"
     task force: ['db:pull', 'db:pull:load', 'db:pull:clean']
-  end
-
-  private
-
-  def server_addr_input
-    printf "Enter server address like 'server@123.4.5.6': "
-    STDIN.gets.strip
-  end
-
-  def data_already_pulled?
-    if %x{ls tmp}.split("\n").include? 'db_server_data'
-      %x(ls tmp/db_server_data).split("\n").size == db_tables.size
-    else
-      false
-    end
-  end
-
-  def psql_import_query table_name
-    "\\copy #{table_name} from " \
-    "'tmp/db_server_data/#{production['database']}_#{table_name}.txt' " \
-    "delimiter E'\\t' null as 'NULL' csv header"
-  end
-
-  def clean_database
-    task_names = %w(db:drop db:create db:migrate)
-    task_names.each { |t| Rake::Task[t].invoke }
-  end
-
-  def login_to_mysql
-    "mysql " \
-    "--user=#{production['username']} " \
-    "--password=#{production['password']} " \
-    "#{production['database']}"
-  end
-
-  def file_to_save table_name
-    "#{tmp_location}/#{production['database']}_#{table_name}.txt"
-  end
-
-  def sql_select table_name
-    "SELECT * FROM #{table_name};"
-  end
-
-  def db_tables
-    ActiveRecord::Base.connection.tables - ['schema_migrations']
-  end
-
-  def tmp_location
-    'app/current/tmp/db_server_data'
-  end
-
-  def show_db_info env
-    Rails.application.config.database_configuration[env]
-  end
-
-  def dev
-    show_db_info 'development'
-  end
-
-  def production
-    show_db_info 'production'
   end
 end
