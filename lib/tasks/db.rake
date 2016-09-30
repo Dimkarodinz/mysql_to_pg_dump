@@ -15,15 +15,16 @@ namespace :db do
 
     if server_addr.include?("@")
       bar = RakeProgressbar.new(db_tables.size)
+      tmp_location = uniq_dir_location
 
       system "ssh #{server_addr} 'mkdir -p #{tmp_location}'"
       db_tables.each do |table|
-        system %{ssh #{server_addr} "echo '#{sql_select(table)}' | #{login_to_mysql} > #{file_to_save(table)}"}
+        system %{ssh #{server_addr} "echo '#{sql_select(table)}' | #{login_to_mysql} > #{file_to_save(table, tmp_location)}"}
         bar.inc
       end
       bar.finished
 
-      system "scp -r #{server_addr}:#{tmp_location} tmp"
+      system "scp -r #{server_addr}:#{tmp_location}/* tmp/db_server_data"
       system "ssh #{server_addr} 'rm -rf #{tmp_location}'"
 
       printf "Db data from production server " \

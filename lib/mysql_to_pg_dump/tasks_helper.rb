@@ -33,8 +33,8 @@ module MysqlToPgDump
       "#{production['database']}"
     end
 
-    def file_to_save table_name
-      "#{tmp_location}/#{production['database']}_#{table_name}.csv"
+    def file_to_save table_name, location
+      "#{location}/#{production['database']}_#{table_name}.csv"
     end
 
     def sql_select table_name
@@ -45,8 +45,14 @@ module MysqlToPgDump
       ActiveRecord::Base.connection.tables - ['schema_migrations']
     end
 
-    def tmp_location
-      'app/current/tmp/db_server_data'
+    def uniq_dir_location
+      "app/current/tmp/db_server_data/#{uniq_string}"
+    end
+
+    def uniq_string
+      s = ""
+      20.times { s << ('0'..'9').to_a.sample }
+      s
     end
 
     def show_db_info env
