@@ -18,7 +18,12 @@ Delete all files from tmp/db_server_data.
 ```bash
 $ rake db:pull:clean
 ```
-Pull, replace and clean junk - all of the above in one task.
+Pull remote mysql db data and then loads it to local postgres db.
+Same as `db:pull` and `db:pull:load`
+```bash
+$ rake db:pull:reload
+```
+Pull remote mysql db data, load it to postgres db and clean junk from /tmp/db_server_data. Same as `db:pull`, `db:pull:load` and `db:pull:clean`.
 ```bash
 $ rake db:pull:force
 ```
