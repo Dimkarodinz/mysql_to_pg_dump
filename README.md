@@ -4,7 +4,7 @@ load it into your local postgres database.
 Technically, it is not a dump - but result is almost the same. 
 
 ## Usage
-Copy content of remote mysql db to tmp/db_server_data as .txt files.
+Copy content of remote mysql db to tmp/db_server_data as .csv files.
 ```bash
 $ rake db:pull your_server@123.4.5.6
 ```
@@ -40,8 +40,7 @@ Or install it yourself as:
 $ gem install mysql_to_pg_dump
 ```
 ## TODO
- - add something for multi-user usage
- - ssh -i key.pem username@server supporting
+ - ssh -i key.pub username@server supporting
 
 ## License
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).

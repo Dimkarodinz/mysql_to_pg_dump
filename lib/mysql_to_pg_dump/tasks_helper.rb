@@ -17,7 +17,7 @@ module MysqlToPgDump
 
     def psql_import_query table_name
       "\\copy #{table_name} from " \
-      "'tmp/db_server_data/#{production['database']}_#{table_name}.txt' " \
+      "'tmp/db_server_data/#{production['database']}_#{table_name}.csv' " \
       "delimiter E'\\t' null as 'NULL' csv header"
     end
 
@@ -34,7 +34,7 @@ module MysqlToPgDump
     end
 
     def file_to_save table_name
-      "#{tmp_location}/#{production['database']}_#{table_name}.txt"
+      "#{tmp_location}/#{production['database']}_#{table_name}.csv"
     end
 
     def sql_select table_name
