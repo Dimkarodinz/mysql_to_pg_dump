@@ -18,7 +18,12 @@ module MysqlToPgDump
     def psql_import_query table_name
       "\\copy #{table_name} from " \
       "'tmp/db_server_data/#{production['database']}_#{table_name}.csv' " \
-      "delimiter E'\\t' null as 'NULL' csv header"
+      "delimiter E'\\t' null as 'NULL' csv header;"
+    end
+
+    def psql_set_sequence table_name
+      "SELECT setval(pg_get_serial_sequence('#{table_name}', 'id'), " \
+      "coalesce(max(id),0) + 1, false) FROM #{table_name};"
     end
 
     def clean_database
