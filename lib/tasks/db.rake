@@ -42,11 +42,12 @@ namespace :db do
       printf "Are you sure? (y/n)\n"
       input = STDIN.gets.strip
 
-      if input == 'y'
+      if input == "\r"#('y' || "\r")
         if data_already_pulled?
           clean_database
-          db_tables.each { |t| system %(psql -d #{dev['database']} -c "#{psql_import_query(t)}") }
-          db_tables.each { |t| system %(psql -d #{dev['database']} -c "#{psql_set_sequence(t)}") }
+          db_tables.each do |t|
+            system %(psql -d #{dev['database']} -c "#{psql_import_query(t)} #{psql_set_sequence(t)}")
+          end
           printf "Your db data now is equal to production\n".green
         else
           printf "No pulled data. Run 'rake db:pull' first\n".yellow
