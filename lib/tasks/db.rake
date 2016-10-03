@@ -42,7 +42,7 @@ namespace :db do
       printf "Are you sure? (y/n)\n"
       input = STDIN.gets.strip
 
-      if input == "\r"#('y' || "\r")
+      if input == ('y' || "\r")
         if data_already_pulled?
           clean_database
           db_tables.each do |t|
