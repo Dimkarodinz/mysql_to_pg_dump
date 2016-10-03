@@ -46,6 +46,7 @@ namespace :db do
         if data_already_pulled?
           clean_database
           db_tables.each { |t| system %(psql -d #{dev['database']} -c "#{psql_import_query(t)}") }
+          db_tables.each { |t| system %(psql -d #{dev['database']} -c "#{psql_set_sequence(t)}") }
           printf "Your db data now is equal to production\n".green
         else
           printf "No pulled data. Run 'rake db:pull' first\n".yellow
