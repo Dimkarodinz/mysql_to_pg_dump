@@ -42,10 +42,10 @@ namespace :db do
       printf "Are you sure? (y/n)\n"
       input = STDIN.gets.strip
 
-      if input == ('y' || '')
+      if input == 'y'
         if data_already_pulled?
-          bar = RakeProgressbar.new(db_tables.size)
           clean_database
+          bar = RakeProgressbar.new(db_tables.size)
           db_tables.each do |t|
             system %(psql -d #{dev['database']} -c "#{psql_import_query(t)} #{psql_set_sequence(t)}")
             bar.inc
