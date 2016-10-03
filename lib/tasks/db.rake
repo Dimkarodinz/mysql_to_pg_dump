@@ -42,12 +42,15 @@ namespace :db do
       printf "Are you sure? (y/n)\n"
       input = STDIN.gets.strip
 
-      if input == ('y' || "\r")
+      if input == ('y' || '')
         if data_already_pulled?
+          bar = RakeProgressbar.new(db_tables.size)
           clean_database
           db_tables.each do |t|
             system %(psql -d #{dev['database']} -c "#{psql_import_query(t)} #{psql_set_sequence(t)}")
+            bar.inc
           end
+          bar.finished
           printf "Your db data now is equal to production\n".green
         else
           printf "No pulled data. Run 'rake db:pull' first\n".yellow
