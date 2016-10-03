@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.email       = ["dimkarodin@gmail.com"]
   s.homepage    = "https://github.com/Dimkarodinz/mysql_to_pg_dump.git"
   s.summary     = "Almost mysql to postgres dump"
-  s.description = "Loads mysql db data from the remote server to the local postgres db"
+  s.description = "Loads mysql db data from the remote server to local postgres db"
   s.license     = "MIT"
 
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
