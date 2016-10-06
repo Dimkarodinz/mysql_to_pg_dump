@@ -64,11 +64,11 @@ namespace :db do
              "deleted from /tmp successfully\n".green
     end
 
-    desc "Pulls remote mysql db data, then loads it to " \
-         "local postgres and cleans junk"
-    task force: ['db:pull', 'db:pull:load', 'db:pull:clean']
-
     desc "Pulls remote mysql db data and loads it to local psql"
     task reload: ['db:pull', 'db:pull:load']
+
+    desc "Pulls remote mysql db data, then loads it to " \
+         "local postgres and cleans junk"
+    task force: ['db:pull:reload', 'db:pull:clean']
   end
 end
