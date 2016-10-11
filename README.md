@@ -1,7 +1,7 @@
 # MysqlToPgDump
 This gem allows pull content from mysql db (on the remote server) and
 load it into your local postgres database.
-Technically, it is not a dump - but result is almost the same. 
+Technically, dump is not using - but result is almost the same. 
 
 ## Usage
 Copy content of remote mysql db to tmp/db_server_data as .csv files.
