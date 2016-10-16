@@ -55,9 +55,9 @@ module MysqlToPgDump
     end
 
     def uniq_string
-      s = ""
-      20.times { s << ('0'..'9').to_a.sample }
-      s
+      result = ""; numbers = ('0'..'9').to_a
+      20.times { result << numbers.sample }
+      result
     end
 
     def show_db_info env

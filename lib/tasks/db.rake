@@ -40,9 +40,9 @@ namespace :db do
     task load: :environment do
       printf "Current env db data will be destroyed.\n".red
       printf "Are you sure? (y/n)\n"
-      input = STDIN.gets.strip
+      confirm_input = STDIN.gets.strip
 
-      if input == 'y'
+      if confirm_input == 'y'
         if data_already_pulled?
           clean_database
           db_tables.each do |t|
