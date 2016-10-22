@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    mysql_to_pg_dump (0.2.5)
+    mysql_to_pg_dump (0.2.6)
       colorize (~> 0.8.1)
       rails (~> 4.2.5)
       rake-progressbar (~> 0.0.5)
