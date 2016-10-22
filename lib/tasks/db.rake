@@ -48,6 +48,7 @@ namespace :db do
           db_tables.each do |t|
             system %(psql -d #{dev['database']} -c "#{psql_import_query(t)} #{psql_set_sequence(t)}")
           end
+          system 'clear'
           printf "Your db data now is equal to production\n".green
         else
           printf "No pulled data. Run 'rake db:pull' first\n".yellow
