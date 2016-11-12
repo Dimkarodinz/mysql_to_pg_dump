@@ -7,6 +7,12 @@ module MysqlToPgDump
       STDIN.gets.strip
     end
 
+    def bash_confirm_input
+      printf "Current env db data will be destroyed.\n".red
+      printf "Are you sure? (y/n)\n"
+      STDIN.gets.strip
+    end
+
     def data_already_pulled?
       if %x{ls tmp}.split("\n").include? 'db_server_data'
         %x(ls tmp/db_server_data).split("\n").size == db_tables.size

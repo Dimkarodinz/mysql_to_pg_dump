@@ -11,7 +11,7 @@ namespace :db do
   task pull: :environment do
     ARGV.each { |a| task a.to_sym do ; end }
     server_addr =
-      ARGV[1].blank? ? server_addr_input : ARGV[1].to_s
+      ARGV[1].to_s.blank? ? server_addr_input : ARGV[1].to_s
 
     if server_addr.include?("@")
       bar = RakeProgressbar.new(db_tables.size)
@@ -30,25 +30,24 @@ namespace :db do
       printf "Db data from production server " \
              "has been pulled successfully\n".green
     else
-      printf "No server address given." \
-             "Expecting format like 'server@123.4.5.6'\n".yellow
+      printf "No server address given. " \
+             "Expecting format is 'server@123.4.5.6'\n".yellow
     end
   end
 
   namespace :pull do
     desc "Replaces current db data to pulled"
     task load: :environment do
-      printf "Current env db data will be destroyed.\n".red
-      printf "Are you sure? (y/n)\n"
-      confirm_input = STDIN.gets.strip
+      ARGV.each { |a| task a.to_sym do ; end }
+      confirm_input =
+        ARGV[1].to_s.blank? ? bash_confirm_input : ARGV[1].to_s
 
-      if confirm_input == 'y'
+      if confirm_input == ('y' || 'yes')
         if data_already_pulled?
           clean_database
           db_tables.each do |t|
             system %(psql -d #{dev['database']} -c "#{psql_import_query(t)} #{psql_set_sequence(t)}")
           end
-          system 'clear'
           printf "Your db data now is equal to production\n".green
         else
           printf "No pulled data. Run 'rake db:pull' first\n".yellow
@@ -66,7 +65,7 @@ namespace :db do
     end
 
     desc "Pulls remote mysql db data and loads it to local psql"
-    task reload: ['db:pull', 'db:pull:load']
+    task reload: ["db:pull", 'db:pull:load']
 
     desc "Pulls remote mysql db data, then loads it to " \
          "local postgres and cleans junk"
